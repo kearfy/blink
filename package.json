@@ -12,7 +12,8 @@
 	"scripts": {
 		"qc": "biome check .",
 		"qa": "biome check . --write",
-		"qau": "biome check . --write --unsafe"
+		"qau": "biome check . --write --unsafe",
+		"dev-frontend": "cd packages/frontend && bun dev"
 	},
 	"workspaces": ["packages/*"]
 }
