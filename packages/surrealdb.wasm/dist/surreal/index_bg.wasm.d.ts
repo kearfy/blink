@@ -1,0 +1,33 @@
+/* tslint:disable */
+/* eslint-disable */
+export const memory: WebAssembly.Memory;
+export function __wbg_surrealwasmengine_free(a: number, b: number): void;
+export function surrealwasmengine_execute(a: number, b: number): number;
+export function surrealwasmengine_notifications(a: number, b: number): void;
+export function surrealwasmengine_connect(a: number, b: number, c: number): number;
+export function surrealwasmengine_export(a: number, b: number): number;
+export function surrealwasmengine_version(a: number): void;
+export function ring_core_0_17_8_bn_mul_mont(a: number, b: number, c: number, d: number, e: number, f: number): void;
+export function __wbg_intounderlyingbytesource_free(a: number, b: number): void;
+export function intounderlyingbytesource_type(a: number): number;
+export function intounderlyingbytesource_autoAllocateChunkSize(a: number): number;
+export function intounderlyingbytesource_start(a: number, b: number): void;
+export function intounderlyingbytesource_pull(a: number, b: number): number;
+export function intounderlyingbytesource_cancel(a: number): void;
+export function __wbg_intounderlyingsource_free(a: number, b: number): void;
+export function intounderlyingsource_pull(a: number, b: number): number;
+export function intounderlyingsource_cancel(a: number): void;
+export function __wbg_intounderlyingsink_free(a: number, b: number): void;
+export function intounderlyingsink_write(a: number, b: number): number;
+export function intounderlyingsink_close(a: number): number;
+export function intounderlyingsink_abort(a: number, b: number): number;
+export function __wbindgen_export_0(a: number, b: number): number;
+export function __wbindgen_export_1(a: number, b: number, c: number, d: number): number;
+export const __wbindgen_export_2: WebAssembly.Table;
+export function __wbindgen_add_to_stack_pointer(a: number): number;
+export function __wbindgen_export_3(a: number, b: number, c: number, d: number): void;
+export function __wbindgen_export_4(a: number, b: number): void;
+export function __wbindgen_export_5(a: number, b: number, c: number): void;
+export function __wbindgen_export_6(a: number, b: number, c: number): void;
+export function __wbindgen_export_7(a: number): void;
+export function __wbindgen_export_8(a: number, b: number, c: number, d: number): void;
