@@ -5,14 +5,17 @@ import { Sidebar } from "../Sidebar";
 export function Layout() {
 	return (
 		<Group
-			p="xl"
 			h="100vh"
 			align="stretch"
+			gap={0}
 		>
 			<Box w={250}>
 				<Sidebar />
 			</Box>
-			<Divider orientation="vertical" />
+			<Divider
+				orientation="vertical"
+				my="xl"
+			/>
 			<Box flex={1}>
 				<Content />
 			</Box>
