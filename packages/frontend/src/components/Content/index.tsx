@@ -17,6 +17,7 @@ export function Content({ id }: { id: string }) {
 			<Loading
 				isReady={!isPending && !isRefetching}
 				logo={false}
+				minDuration={200}
 			>
 				{page ? (
 					<ContentEditor page={page} />

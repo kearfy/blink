@@ -7,11 +7,13 @@ export function Loading({
 	isReady,
 	logo = true,
 	minDuration = 250,
+	zIndex = 100,
 }: {
 	children: ReactNode;
 	isReady: boolean;
 	logo?: boolean;
 	minDuration?: number;
+	zIndex?: number;
 }) {
 	const [show, setShow] = useState<boolean | number>(true);
 
@@ -49,7 +51,7 @@ export function Loading({
 						h="100%"
 						style={{
 							...style,
-							zIndex: 100,
+							zIndex,
 						}}
 						bg="white"
 					>

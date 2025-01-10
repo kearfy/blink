@@ -1,5 +1,4 @@
 import {
-	type Query,
 	type QueryClient,
 	useMutation,
 	useQuery,
@@ -7,7 +6,6 @@ import {
 } from "@tanstack/react-query";
 import { RecordId, surql } from "surrealdb";
 import { useSurrealClient } from "~/components/Providers/surreal";
-import type { Entries } from "~/utils/types";
 
 export type Page = {
 	id: RecordId<"page">;
@@ -18,6 +16,8 @@ export type Page = {
 	created: Date;
 	updated: Date;
 };
+
+export type PageWithNested = Page & { nested: PageWithNested[] };
 
 export type PageFilter = Partial<Pick<Page, "favorite" | "parent">>;
 
@@ -38,6 +38,31 @@ export function usePages({ filter }: { filter: PageFilter }) {
 			}
 
 			const [pages] = await db.query<[Page[]]>(query, filter);
+
+			return pages;
+		},
+	});
+}
+
+export function useRecursivePages({ filter }: { filter: PageFilter }) {
+	const db = useSurrealClient();
+
+	return useQuery<PageWithNested[]>({
+		queryKey: ["page", "list-recursive", filter],
+		queryFn: async () => {
+			let query = "LET $ids = SELECT VALUE id FROM page";
+
+			const filterString = Object.entries(filter)
+				.map(([key, value]) => `${key} = ${value}`)
+				.join(" AND ");
+
+			if (filterString) {
+				query += ` WHERE ${filterString}`;
+			}
+
+			query += "; $ids.{..}.{ id, title, favorite, parent, content, created, updated, nested: id.revs('page', 'parent').@ }";
+
+			const [_, pages] = await db.query<[undefined, PageWithNested[]]>(query, filter);
 
 			return pages;
 		},
@@ -90,7 +115,7 @@ export function useUpdatePage(id: string) {
 			);
 
 			if (page) {
-				updatePageInCache(qc, page);
+				refetchPageQueries(qc);
 				return page;
 			}
 
@@ -120,7 +145,7 @@ export function useCreatePage() {
 			);
 
 			if (page) {
-				updatePageInCache(qc, page);
+				refetchPageQueries(qc);
 				return page;
 			}
 
@@ -141,7 +166,7 @@ export function useDeletePage() {
 			);
 
 			if (page) {
-				removePageFromCache(qc, page);
+				refetchPageQueries(qc);
 				return true;
 			}
 
@@ -150,75 +175,10 @@ export function useDeletePage() {
 	});
 }
 
-function createCachePredicate(page: Page) {
-	return (query: Query) => {
-		const key = query.queryKey;
-		if (key[0] === "page") {
-			switch (key[1]) {
-				case "fetch": {
-					if (key[2] === page.id.id) {
-						return true;
-					}
-
-					break;
-				}
-				case "list": {
-					const filter = key[2];
-					for (const item of Object.entries(
-						filter as PageFilter,
-					) as Entries<PageFilter>) {
-						if (!item) continue;
-						if (page[item[0]] !== item[1]) {
-							return false;
-						}
-					}
-
-					return true;
-				}
-				case "list-nested": {
-					if (key[2] === page.parent?.id) {
-						return true;
-					}
-
-					break;
-				}
-			}
+function refetchPageQueries(qc: QueryClient) {
+	qc.refetchQueries(
+		{
+			predicate: (query) => query.queryKey[0] === "page"
 		}
-
-		return false;
-	};
-}
-
-function updatePageInCache(qc: QueryClient, page: Page) {
-	qc.setQueriesData(
-		{
-			predicate: createCachePredicate(page),
-		},
-		(prev) => {
-			if (Array.isArray(prev)) {
-				const pages = prev as Page[];
-				const filtered = pages.filter((p) => p.id.id !== page.id.id);
-				return [...filtered, page];
-			}
-
-			return page;
-		},
-	);
-}
-
-function removePageFromCache(qc: QueryClient, page: Page) {
-	qc.setQueriesData(
-		{
-			predicate: createCachePredicate(page),
-		},
-		(prev) => {
-			if (Array.isArray(prev)) {
-				const pages = prev as Page[];
-				const filtered = pages.filter((p) => p.id.id !== page.id.id);
-				return filtered;
-			}
-
-			return undefined;
-		},
 	);
 }
