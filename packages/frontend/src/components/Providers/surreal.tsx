@@ -1,6 +1,13 @@
-import { Surreal } from "surrealdb";
 import { useMutation } from "@tanstack/react-query";
-import { createContext, useContext, useEffect, useMemo, useCallback, useState } from "react";
+import {
+	createContext,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
+import { Surreal } from "surrealdb";
 
 interface SurrealProviderProps {
 	children: React.ReactNode;
@@ -31,7 +38,9 @@ interface SurrealProviderState {
 	close: () => Promise<true>;
 }
 
-const SurrealContext = createContext<SurrealProviderState | undefined>(undefined);
+const SurrealContext = createContext<SurrealProviderState | undefined>(
+	undefined,
+);
 
 export function SurrealProvider({
 	children,
@@ -87,7 +96,9 @@ export function SurrealProvider({
 		[surrealInstance, isPending, isSuccess, isError, error, connect, close],
 	);
 
-	return <SurrealContext.Provider value={value}>{children}</SurrealContext.Provider>;
+	return (
+		<SurrealContext.Provider value={value}>{children}</SurrealContext.Provider>
+	);
 }
 
 /**
