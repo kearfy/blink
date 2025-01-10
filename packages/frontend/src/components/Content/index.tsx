@@ -32,8 +32,8 @@ export function Content({ id }: { id: string }) {
 
 export function ContentEditor({ page }: { page: Page }) {
 	const editor = useCreateBlockNote({
-		initialContent:
-			page.content.length > 0 ? (page.content as PartialBlock[]) : undefined,
+		// initialContent:
+		// 	page.content.length > 0 ? (page.content as PartialBlock[]) : undefined,
 	});
 
 	const { mutateAsync: updatePage } = useUpdatePage(page.id.id as string);
@@ -48,11 +48,11 @@ export function ContentEditor({ page }: { page: Page }) {
 		}
 	}, [page?.title, title, updatePage]);
 
-	useEffect(() => {
-		updatePage({
-			content: editor.document,
-		});
-	}, [editor.document, updatePage]);
+	// useEffect(() => {
+	// 	updatePage({
+	// 		content: editor.document,
+	// 	});
+	// }, [editor.document, updatePage]);
 
 	const handleTitleEnter = useCallback(
 		(e: KeyboardEvent) => {
