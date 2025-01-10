@@ -3,19 +3,18 @@ import "@blocknote/mantine/style.css";
 import "@blocknote/core/fonts/inter.css";
 import "~/styles/global.scss";
 
-import { MantineProvider } from "@mantine/core";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Layout } from "./components/Layout";
-import { MANTINE_THEME } from "./utils/mantine";
+import { Providers } from "./components/Providers";
 
 const root = document.getElementById("root");
 if (!root) throw new Error("No root element");
 
 createRoot(root).render(
 	<StrictMode>
-		<MantineProvider theme={MANTINE_THEME}>
+		<Providers>
 			<Layout />
-		</MantineProvider>
+		</Providers>
 	</StrictMode>,
 );
