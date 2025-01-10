@@ -10,7 +10,7 @@ export function Layout() {
 			align="stretch"
 			gap={0}
 		>
-			<Box w={250}>
+			<Box w={300}>
 				<Sidebar />
 			</Box>
 			<Divider
