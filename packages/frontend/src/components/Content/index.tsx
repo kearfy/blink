@@ -2,9 +2,12 @@ import { BlockNoteView } from "@blocknote/mantine";
 import { useCreateBlockNote } from "@blocknote/react";
 import { Box, ScrollArea, Textarea, rem } from "@mantine/core";
 import { type KeyboardEvent, useCallback } from "react";
+import { EDITOR_SCHEMA } from "~/utils/schema";
 
 export function Content() {
-	const editor = useCreateBlockNote();
+	const editor = useCreateBlockNote({
+		schema: EDITOR_SCHEMA,
+	});
 
 	const handleTitleEnter = useCallback(
 		(e: KeyboardEvent) => {
