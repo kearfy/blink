@@ -10,6 +10,8 @@ import {
 } from "@mantine/core";
 
 import {
+	ChevronDown,
+	ChevronRight,
 	EllipsisVertical,
 	FileTextIcon,
 	Link,
@@ -20,7 +22,7 @@ import {
 } from "lucide-react";
 
 import { useClipboard } from "@mantine/hooks";
-import type { PropsWithChildren } from "react";
+import { useState, type PropsWithChildren } from "react";
 import type { RecordId } from "surrealdb";
 import { useLocation, useRoute } from "wouter";
 import { useCreatePage, useDeletePage, useUpdatePage } from "~/queries/page";
@@ -47,6 +49,7 @@ export function Inkling({
 
 	const path = `/inkling/${pageId.id}`;
 	const [active] = useRoute(path);
+	const [expanded, setExpanded] = useState(false);
 
 	return (
 		<Button
@@ -57,13 +60,33 @@ export function Inkling({
 			c="black"
 			miw={0}
 			styles={{ label: { flex: 1 } }}
-			pr={4}
+			px={4}
 			leftSection={
-				<Icon
-					icon={FileTextIcon}
-					size="sm"
-					c="dark.9"
-				/>
+				<>
+					<ActionIcon
+						variant="subtle"
+						color="dark.5"
+						className={classes.expander}
+						component="div"
+						onClick={(e) => {
+							e.stopPropagation();
+							e.preventDefault();
+							setExpanded(!expanded);
+						}}
+					>
+						<Icon
+							icon={expanded ? ChevronDown : ChevronRight}
+							size="sm"
+						/>
+					</ActionIcon>
+					<Icon
+						icon={FileTextIcon}
+						className={classes.icon}
+						size="sm"
+						c="dark.9"
+						px={5}
+					/>
+				</>
 			}
 			rightSection={
 				<>

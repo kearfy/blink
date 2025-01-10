@@ -1,7 +1,23 @@
-.root .action {
-	visibility: hidden;
+.root {
+	.action {
+		visibility: hidden;
+	}
+
+	.expander {
+		display: none;
+	}
 }
 
-.root:hover .action {
-	visibility: visible;
+.root:hover {
+	.action {
+		visibility: visible;
+	}
+
+	.expander {
+		display: block;
+	}
+
+	.icon {
+		display: none;
+	}
 }
