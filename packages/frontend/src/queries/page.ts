@@ -44,6 +44,22 @@ export function usePages({ filter }: { filter: PageFilter }) {
 	});
 }
 
+export function useNestedPages(id: string) {
+	const db = useSurrealClient();
+
+	return useQuery<Page[]>({
+		queryKey: ["page", "list-nested", id],
+		queryFn: async () => {
+			const rid = new RecordId("page", id);
+			const [pages] = await db.query<[Page[]]>(
+				surql`SELECT * FROM ${rid}.refs('page', 'parent')`,
+			);
+
+			return pages;
+		},
+	});
+}
+
 export function usePage(id: string) {
 	const db = useSurrealClient();
 
@@ -158,6 +174,13 @@ function createCachePredicate(page: Page) {
 					}
 
 					return true;
+				}
+				case "list-nested": {
+					if (key[2] === page.parent?.id) {
+						return true;
+					}
+
+					break;
 				}
 			}
 		}
