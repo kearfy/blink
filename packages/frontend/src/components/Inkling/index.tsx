@@ -4,6 +4,7 @@ import {
 	ActionIcon,
 	Button,
 	Menu,
+	Text,
 	type ButtonProps,
 	type ElementProps,
 } from "@mantine/core";
@@ -113,7 +114,7 @@ export function Inkling({
 			}
 			{...other}
 		>
-			{children}
+			<Text truncate>{children}</Text>
 		</Button>
 	);
 }

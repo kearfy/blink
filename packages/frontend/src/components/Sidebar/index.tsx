@@ -1,3 +1,5 @@
+import classes from "./style.module.scss";
+
 import {
 	ActionIcon,
 	Box,
@@ -7,6 +9,7 @@ import {
 	Stack,
 	Text,
 } from "@mantine/core";
+
 import { PlusIcon } from "lucide-react";
 import { useMemo } from "react";
 import { Link, useLocation, useRoute } from "wouter";
@@ -50,6 +53,7 @@ export function Sidebar() {
 			<ScrollArea
 				pos="absolute"
 				inset={0}
+				className={classes.scroller}
 			>
 				<Stack
 					gap="xs"
