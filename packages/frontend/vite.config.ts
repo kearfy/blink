@@ -20,4 +20,15 @@ export default defineConfig({
 			},
 		},
 	},
+	optimizeDeps: {
+		exclude: ["@surrealdb/wasm"],
+		esbuildOptions: {
+			target: "esnext",
+		},
+	},
+	esbuild: {
+		supported: {
+			"top-level-await": true
+		},
+	},
 });
