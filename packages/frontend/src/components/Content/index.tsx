@@ -1,10 +1,19 @@
+import { filterSuggestionItems } from "@blocknote/core";
 import { BlockNoteView } from "@blocknote/mantine";
-import { useCreateBlockNote } from "@blocknote/react";
+import {
+	getDefaultReactSlashMenuItems,
+	SuggestionMenuController,
+	useCreateBlockNote,
+} from "@blocknote/react";
 import { Box, ScrollArea, Textarea, rem } from "@mantine/core";
 import { type KeyboardEvent, useCallback } from "react";
+import { insertCodeMirror } from "~/blocks/code";
+import { BLOCKNOTE_SCHEMA } from "~/utils/schema";
 
 export function Content() {
-	const editor = useCreateBlockNote();
+	const editor = useCreateBlockNote({
+		schema: BLOCKNOTE_SCHEMA,
+	});
 
 	const handleTitleEnter = useCallback(
 		(e: KeyboardEvent) => {
@@ -55,7 +64,21 @@ export function Content() {
 					<BlockNoteView
 						editor={editor}
 						theme="light"
-					/>
+						slashMenu={false}
+					>
+						<SuggestionMenuController
+							triggerCharacter={"/"}
+							getItems={async (query) =>
+								filterSuggestionItems(groupS
+									[
+										...getDefaultReactSlashMenuItems(editor),
+										insertCodeMirror(editor),
+									],
+									query,
+								)
+							}
+						/>
+					</BlockNoteView>
 				</Box>
 			</ScrollArea>
 		</Box>
