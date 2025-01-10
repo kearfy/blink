@@ -77,7 +77,7 @@ export function Sidebar() {
 							favorite={true}
 							pageId={page.id}
 						>
-							{page.title}
+							{page.title || "New Inkling"}
 						</Inkling>
 					))}
 
