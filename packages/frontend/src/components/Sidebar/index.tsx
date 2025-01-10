@@ -76,7 +76,7 @@ export function Sidebar() {
 						<Inkling
 							key={page.id.toString()}
 							favorite={true}
-							pageId={page.id}
+							page={page}
 						>
 							{page.title || "New Inkling"}
 						</Inkling>
@@ -113,7 +113,7 @@ export function Sidebar() {
 								textDecoration: "none",
 							}}
 						>
-							<Inkling pageId={page.id}>{page.title || "New Inkling"}</Inkling>
+							<Inkling page={page} />
 						</Link>
 					))}
 				</Stack>

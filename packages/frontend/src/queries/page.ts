@@ -21,11 +21,15 @@ export type PageWithNested = Page & { nested: PageWithNested[] };
 
 export type PageFilter = Partial<Pick<Page, "favorite" | "parent">>;
 
-export function usePages({ filter }: { filter: PageFilter }) {
+export function usePages({
+	filter,
+	enabled,
+}: { filter: PageFilter; enabled?: boolean }) {
 	const db = useSurrealClient();
 
 	return useQuery<Page[]>({
 		queryKey: ["page", "list", filter],
+		enabled,
 		queryFn: async () => {
 			let query = "SELECT * FROM page";
 
@@ -63,6 +67,7 @@ export function useRecursivePages({ filter }: { filter: PageFilter }) {
 			query +=
 				"; $ids.{..}.{ id, title, favorite, parent, content, created, updated, nested: id.revs('page', 'parent').@ }";
 
+			console.log(query);
 			const [_, pages] = await db.query<[undefined, PageWithNested[]]>(
 				query,
 				filter,
