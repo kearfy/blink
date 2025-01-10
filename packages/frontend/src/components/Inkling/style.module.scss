@@ -1,0 +1,7 @@
+.root .action {
+	visibility: hidden;
+}
+
+.root:hover .action {
+	visibility: visible;
+}
