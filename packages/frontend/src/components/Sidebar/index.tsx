@@ -10,8 +10,25 @@ import {
 import { PlusIcon } from "lucide-react";
 import logoImg from "~/assets/logo.svg";
 import { Inkling } from "../Inkling";
+import { type Page, usePages } from "~/queries/page";
+import { useMemo } from "react";
 
 export function Sidebar() {
+	const pages = usePages({ filter: { parent: undefined } });
+	const [favorites, inklings] = useMemo((): [Page[], Page[]] => {
+		if (!pages.data) return [[], []];
+
+		return pages.data.reduce<[Page[], Page[]]>(([fav, ink], cur) => {
+			if (cur.favorite) {
+				fav.push(cur);
+			} else {
+				ink.push(cur);
+			}
+
+			return [fav, ink];
+		}, [[], []]);
+	}, [pages.data]);
+
 	return (
 		<Box
 			flex={1}
@@ -39,8 +56,11 @@ export function Sidebar() {
 					>
 						Favorites
 					</Text>
-					<Inkling>Test 1</Inkling>
-					<Inkling active>Test 2</Inkling>
+					{favorites.map((page) => (
+						<Inkling key={page.id.toString()}>
+							{page.title}
+						</Inkling>
+					))}
 
 					<Group mt="xl">
 						<Text
@@ -58,10 +78,11 @@ export function Sidebar() {
 							<PlusIcon size={18} />
 						</ActionIcon>
 					</Group>
-					<Inkling>Test 1</Inkling>
-					<Inkling active>Test 2</Inkling>
-					<Inkling>Test 3</Inkling>
-					<Inkling>Test 4</Inkling>
+					{inklings.map((page) => (
+						<Inkling key={page.id.toString()}>
+							{page.title}
+						</Inkling>
+					))}
 				</Stack>
 			</ScrollArea>
 		</Box>
