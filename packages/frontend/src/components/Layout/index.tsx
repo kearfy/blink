@@ -1,4 +1,5 @@
 import { Box, Divider, Group } from "@mantine/core";
+import { Route, Switch } from "wouter";
 import { Content } from "../Content";
 import { Sidebar } from "../Sidebar";
 
@@ -17,7 +18,11 @@ export function Layout() {
 				my="xl"
 			/>
 			<Box flex={1}>
-				<Content />
+				<Switch>
+					<Route path="/inkling/:id">
+						{(params) => <Content id={params.id} />}
+					</Route>
+				</Switch>
 			</Box>
 		</Group>
 	);

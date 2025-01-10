@@ -1,13 +1,58 @@
+import type { PartialBlock } from "@blocknote/core";
 import { BlockNoteView } from "@blocknote/mantine";
 import { useCreateBlockNote } from "@blocknote/react";
-import { Box, ScrollArea, Textarea, rem } from "@mantine/core";
-import { type KeyboardEvent, useCallback } from "react";
-import { EDITOR_SCHEMA } from "~/utils/schema";
+import { Box, Center, ScrollArea, Textarea, Title, rem } from "@mantine/core";
+import { type KeyboardEvent, useCallback, useEffect, useState } from "react";
+import { type Page, usePage, useUpdatePage } from "~/queries/page";
+import { Loading } from "../Loading";
 
-export function Content() {
+export function Content({ id }: { id: string }) {
+	const { data: page, isPending, isRefetching } = usePage(id);
+
+	return (
+		<Box
+			pos="relative"
+			h="100%"
+		>
+			<Loading
+				isReady={!isPending && !isRefetching}
+				logo={false}
+			>
+				{page ? (
+					<ContentEditor page={page} />
+				) : (
+					<Center h="100%">
+						<Title order={1}>Inkling not found</Title>
+					</Center>
+				)}
+			</Loading>
+		</Box>
+	);
+}
+
+export function ContentEditor({ page }: { page: Page }) {
 	const editor = useCreateBlockNote({
-		schema: EDITOR_SCHEMA,
+		initialContent:
+			page.content.length > 0 ? (page.content as PartialBlock[]) : undefined,
 	});
+
+	const { mutateAsync: updatePage } = useUpdatePage(page.id.id as string);
+
+	const [title, setTitle] = useState(page.title);
+
+	useEffect(() => {
+		if (title.length > 0 && title !== page.title) {
+			updatePage({
+				title,
+			});
+		}
+	}, [page?.title, title, updatePage]);
+
+	useEffect(() => {
+		updatePage({
+			content: editor.document,
+		});
+	}, [editor.document, updatePage]);
 
 	const handleTitleEnter = useCallback(
 		(e: KeyboardEvent) => {
@@ -41,7 +86,9 @@ export function Content() {
 						<Textarea
 							variant="unstyled"
 							autosize
-							defaultValue="This is my inkling title"
+							value={title}
+							onChange={(e) => setTitle(e.currentTarget.value)}
+							placeholder="New Inkling"
 							onKeyDown={handleTitleEnter}
 							styles={{
 								input: {

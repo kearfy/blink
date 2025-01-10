@@ -1,6 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import type { RecordId } from "surrealdb";
+import {
+	type QueryClient,
+	useMutation,
+	useQuery,
+	useQueryClient,
+} from "@tanstack/react-query";
+import { RecordId, surql } from "surrealdb";
 import { useSurrealClient } from "~/components/Providers/surreal";
+import type { Entries } from "~/utils/types";
 
 export type Page = {
 	id: RecordId<"page">;
@@ -35,4 +41,118 @@ export function usePages({ filter }: { filter: PageFilter }) {
 			return pages;
 		},
 	});
+}
+
+export function usePage(id: string) {
+	const db = useSurrealClient();
+
+	return useQuery<Page | null>({
+		queryKey: ["page", "fetch", id],
+		queryFn: async () => {
+			const rid = new RecordId("page", id);
+			const page = await db.select<Page>(rid);
+			return page ?? null;
+		},
+	});
+}
+
+export function useUpdatePage(id: string) {
+	const db = useSurrealClient();
+	const qc = useQueryClient();
+
+	return useMutation<
+		Page | null,
+		Error,
+		Partial<Pick<Page, "content" | "favorite" | "title" | "parent">>
+	>({
+		mutationKey: ["page", "list", id],
+		mutationFn: async (payload) => {
+			const rid = new RecordId("page", id);
+			const [[page]] = await db.query<[(Page | undefined)[]]>(
+				surql`UPDATE ${rid} MERGE ${payload}`,
+			);
+
+			if (page) {
+				updateCache(qc, page);
+				return page;
+			}
+
+			return null;
+		},
+	});
+}
+
+export function useCreatePage() {
+	const db = useSurrealClient();
+	const qc = useQueryClient();
+
+	return useMutation<
+		Page | null,
+		Error,
+		Partial<Pick<Page, "content" | "favorite" | "title" | "parent">>
+	>({
+		mutationKey: ["page", "create"],
+		mutationFn: async (payload) => {
+			const [page] = await db.create<Page, Pick<Page, "title" | "content">>(
+				"page",
+				{
+					title: "",
+					content: [],
+					...payload,
+				},
+			);
+
+			if (page) {
+				updateCache(qc, page);
+				return page;
+			}
+
+			return null;
+		},
+	});
+}
+
+function updateCache(qc: QueryClient, page: Page) {
+	qc.setQueriesData(
+		{
+			predicate: (query) => {
+				const key = query.queryKey;
+				if (key[0] === "page") {
+					switch (key[1]) {
+						case "fetch": {
+							if (key[2] === page.id.id) {
+								return true;
+							}
+
+							break;
+						}
+						case "list": {
+							const filter = key[2];
+							for (const item of Object.entries(
+								filter as PageFilter,
+							) as Entries<PageFilter>) {
+								if (!item) continue;
+								if (page[item[0]] !== item[1]) {
+									return false;
+								}
+							}
+
+							return true;
+						}
+					}
+				}
+
+				return false;
+			},
+		},
+		(prev) => {
+			if (Array.isArray(prev)) {
+				const pages = prev as Page[];
+				const filtered = pages.filter((p) => p.id.id !== page.id.id);
+				return [...filtered, page];
+			}
+
+			return page;
+		},
+	);
 }

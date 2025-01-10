@@ -9,16 +9,20 @@ import {
 } from "@mantine/core";
 import { PlusIcon } from "lucide-react";
 import { useMemo } from "react";
+import { Link, useLocation, useRoute } from "wouter";
 import logoImg from "~/assets/logo.svg";
-import { type Page, usePages } from "~/queries/page";
+import { type Page, useCreatePage, usePages } from "~/queries/page";
 import { Inkling } from "../Inkling";
 
 export function Sidebar() {
+	const [_, navigate] = useLocation();
+	const active = useRoute("/inkling/:id")[1]?.id;
+	const { mutateAsync: createPage } = useCreatePage();
 	const pages = usePages({ filter: { parent: undefined } });
 	const [favorites, inklings] = useMemo((): [Page[], Page[]] => {
 		if (!pages.data) return [[], []];
 
-		return pages.data.reduce<[Page[], Page[]]>(
+		const [fav, ink] = pages.data.reduce<[Page[], Page[]]>(
 			([fav, ink], cur) => {
 				if (cur.favorite) {
 					fav.push(cur);
@@ -30,6 +34,11 @@ export function Sidebar() {
 			},
 			[[], []],
 		);
+
+		return [
+			fav.sort((a, b) => b.updated.getTime() - a.updated.getTime()),
+			ink.sort((a, b) => b.updated.getTime() - a.updated.getTime()),
+		];
 	}, [pages.data]);
 
 	return (
@@ -75,12 +84,29 @@ export function Sidebar() {
 						<ActionIcon
 							variant="subtle"
 							color="dark.5"
+							onClick={() =>
+								createPage({}).then(
+									(page) => page && navigate(`/inkling/${page.id.id}`),
+								)
+							}
 						>
 							<PlusIcon size={18} />
 						</ActionIcon>
 					</Group>
 					{inklings.map((page) => (
-						<Inkling key={page.id.toString()}>{page.title}</Inkling>
+						<Link
+							key={page.id.id.toString()}
+							href={`/inkling/${page.id.id}`}
+							style={{
+								width: "100%",
+								display: "block",
+								textDecoration: "none",
+							}}
+						>
+							<Inkling active={page.id.id === active}>
+								{page.title || "New Inkling"}
+							</Inkling>
+						</Link>
 					))}
 				</Stack>
 			</ScrollArea>

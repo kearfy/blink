@@ -16,6 +16,7 @@ export function Inkling({
 }: PropsWithChildren<InklingProps>) {
 	return (
 		<Button
+			fullWidth
 			variant={active ? undefined : "subtle"}
 			color={active ? "gray.2" : "dark.0"}
 			c="black"
