@@ -8,25 +8,28 @@ import {
 	Text,
 } from "@mantine/core";
 import { PlusIcon } from "lucide-react";
-import logoImg from "~/assets/logo.svg";
-import { Inkling } from "../Inkling";
-import { type Page, usePages } from "~/queries/page";
 import { useMemo } from "react";
+import logoImg from "~/assets/logo.svg";
+import { type Page, usePages } from "~/queries/page";
+import { Inkling } from "../Inkling";
 
 export function Sidebar() {
 	const pages = usePages({ filter: { parent: undefined } });
 	const [favorites, inklings] = useMemo((): [Page[], Page[]] => {
 		if (!pages.data) return [[], []];
 
-		return pages.data.reduce<[Page[], Page[]]>(([fav, ink], cur) => {
-			if (cur.favorite) {
-				fav.push(cur);
-			} else {
-				ink.push(cur);
-			}
+		return pages.data.reduce<[Page[], Page[]]>(
+			([fav, ink], cur) => {
+				if (cur.favorite) {
+					fav.push(cur);
+				} else {
+					ink.push(cur);
+				}
 
-			return [fav, ink];
-		}, [[], []]);
+				return [fav, ink];
+			},
+			[[], []],
+		);
 	}, [pages.data]);
 
 	return (
@@ -57,9 +60,7 @@ export function Sidebar() {
 						Favorites
 					</Text>
 					{favorites.map((page) => (
-						<Inkling key={page.id.toString()}>
-							{page.title}
-						</Inkling>
+						<Inkling key={page.id.toString()}>{page.title}</Inkling>
 					))}
 
 					<Group mt="xl">
@@ -79,9 +80,7 @@ export function Sidebar() {
 						</ActionIcon>
 					</Group>
 					{inklings.map((page) => (
-						<Inkling key={page.id.toString()}>
-							{page.title}
-						</Inkling>
+						<Inkling key={page.id.toString()}>{page.title}</Inkling>
 					))}
 				</Stack>
 			</ScrollArea>
