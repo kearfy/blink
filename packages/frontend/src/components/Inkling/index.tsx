@@ -7,10 +7,10 @@ import {
 	type ButtonProps,
 	Collapse,
 	type ElementProps,
+	Loader,
 	Menu,
 	Stack,
 	Text,
-	Loader,
 } from "@mantine/core";
 
 import {
@@ -18,7 +18,7 @@ import {
 	ChevronRight,
 	EllipsisVertical,
 	FileTextIcon,
-	Link,
+	Link as LinkIcon,
 	PlusIcon,
 	Star,
 	StarOff,
@@ -27,7 +27,7 @@ import {
 
 import { useClipboard } from "@mantine/hooks";
 import { useState } from "react";
-import { useLocation, useRoute } from "wouter";
+import { Link, useLocation, useRoute } from "wouter";
 
 import {
 	type Page,
@@ -170,7 +170,7 @@ export function Inkling({ favorite, children, page, ...other }: InklingProps) {
 								<Menu.Item
 									leftSection={
 										<Icon
-											icon={Link}
+											icon={LinkIcon}
 											size="sm"
 										/>
 									}
@@ -212,12 +212,22 @@ export function Inkling({ favorite, children, page, ...other }: InklingProps) {
 				{(childPages?.length || 0) > 0 ? (
 					<Stack pl="xl">
 						{childPages?.map((child) => (
-							<Inkling
-								key={child.id.toString()}
-								page={child}
+							<Link
+								key={child.id.id.toString()}
+								href={`/inkling/${child.id.id}`}
+								style={{
+									width: "100%",
+									display: "block",
+									textDecoration: "none",
+								}}
 							>
-								{child.title || "New Inkling"}
-							</Inkling>
+								<Inkling
+									page={child}
+									favorite={child.favorite}
+								>
+									{child.title || "New Inkling"}
+								</Inkling>
+							</Link>
 						))}
 					</Stack>
 				) : (
