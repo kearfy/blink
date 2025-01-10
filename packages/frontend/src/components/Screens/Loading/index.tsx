@@ -1,8 +1,9 @@
 import { Center, Image, Stack, Text } from "@mantine/core";
 import { Group } from "@mantine/core";
 import { Loader } from "@mantine/core";
-import type { ReactNode } from "react";
+import { type ReactNode, useMemo } from "react";
 import logoImg from "~/assets/logo.svg";
+import { useMigrations } from "~/components/Providers/migrations";
 import { useSurreal } from "~/components/Providers/surreal";
 
 export function LoadingScreen({
@@ -11,8 +12,13 @@ export function LoadingScreen({
 	children: ReactNode;
 }) {
 	const { isSuccess: isSurrealReady } = useSurreal();
+	const { isSuccess: isMigrationsReady } = useMigrations();
+	const isReady = useMemo(
+		() => isSurrealReady && isMigrationsReady,
+		[isSurrealReady, isMigrationsReady],
+	);
 
-	if (!isSurrealReady) {
+	if (!isReady) {
 		return (
 			<Center h="100vh">
 				<Stack gap="xl">

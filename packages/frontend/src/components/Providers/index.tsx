@@ -11,6 +11,7 @@ const surrealClient = new Surreal({
 
 import { MantineProvider } from "@mantine/core";
 import { MANTINE_THEME } from "../../utils/mantine";
+import { MigrationsProvider } from "./migrations";
 
 export function Providers({ children }: { children: ReactNode }) {
 	return (
@@ -23,7 +24,9 @@ export function Providers({ children }: { children: ReactNode }) {
 					database: "blink",
 				}}
 			>
-				<MantineProvider theme={MANTINE_THEME}>{children}</MantineProvider>
+				<MigrationsProvider>
+					<MantineProvider theme={MANTINE_THEME}>{children}</MantineProvider>
+				</MigrationsProvider>
 			</SurrealProvider>
 		</QueryClientProvider>
 	);
