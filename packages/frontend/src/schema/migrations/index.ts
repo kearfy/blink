@@ -1,1 +1,1 @@
-export { default as mig1 } from "./mig1.ts";
+export { default as mig1 } from "./mig1_initial-page-schema.ts";
