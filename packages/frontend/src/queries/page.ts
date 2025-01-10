@@ -60,9 +60,13 @@ export function useRecursivePages({ filter }: { filter: PageFilter }) {
 				query += ` WHERE ${filterString}`;
 			}
 
-			query += "; $ids.{..}.{ id, title, favorite, parent, content, created, updated, nested: id.revs('page', 'parent').@ }";
+			query +=
+				"; $ids.{..}.{ id, title, favorite, parent, content, created, updated, nested: id.revs('page', 'parent').@ }";
 
-			const [_, pages] = await db.query<[undefined, PageWithNested[]]>(query, filter);
+			const [_, pages] = await db.query<[undefined, PageWithNested[]]>(
+				query,
+				filter,
+			);
 
 			return pages;
 		},
@@ -176,9 +180,7 @@ export function useDeletePage() {
 }
 
 function refetchPageQueries(qc: QueryClient) {
-	qc.refetchQueries(
-		{
-			predicate: (query) => query.queryKey[0] === "page"
-		}
-	);
+	qc.refetchQueries({
+		predicate: (query) => query.queryKey[0] === "page",
+	});
 }

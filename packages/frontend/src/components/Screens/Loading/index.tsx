@@ -15,5 +15,12 @@ export function LoadingScreen({
 		[isSurrealReady, isMigrationsReady],
 	);
 
-	return <Loading isReady={isReady} zIndex={200}>{children}</Loading>;
+	return (
+		<Loading
+			isReady={isReady}
+			zIndex={200}
+		>
+			{children}
+		</Loading>
+	);
 }
