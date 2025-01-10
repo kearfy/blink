@@ -1,7 +1,9 @@
+import "~/styles/global.scss";
+import "~/styles/fonts.scss";
+
 import "@mantine/core/styles.css";
 import "@blocknote/mantine/style.css";
 import "@blocknote/core/fonts/inter.css";
-import "~/styles/global.scss";
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";

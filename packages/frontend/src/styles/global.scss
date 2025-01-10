@@ -18,3 +18,7 @@ input::-ms-reveal,
 input::-ms-clear {
 	display: none;
 }
+
+.bn-container .bn-editor * {
+	font-family: var(--mantine-font-family);
+}
