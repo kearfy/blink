@@ -21,6 +21,7 @@ export function Sidebar() {
 	const [_, navigate] = useLocation();
 	const { mutateAsync: createPage } = useCreatePage();
 	const pages = usePages({ filter: { parent: undefined } });
+
 	const [favorites, inklings] = useMemo((): [Page[], Page[]] => {
 		if (!pages.data) return [[], []];
 
