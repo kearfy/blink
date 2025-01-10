@@ -12,14 +12,13 @@ import {
 
 import { PlusIcon } from "lucide-react";
 import { useMemo } from "react";
-import { Link, useLocation, useRoute } from "wouter";
+import { Link, useLocation } from "wouter";
 import logoImg from "~/assets/logo.svg";
 import { type Page, useCreatePage, usePages } from "~/queries/page";
 import { Inkling } from "../Inkling";
 
 export function Sidebar() {
 	const [_, navigate] = useLocation();
-	const active = useRoute("/inkling/:id")[1]?.id;
 	const { mutateAsync: createPage } = useCreatePage();
 	const pages = usePages({ filter: { parent: undefined } });
 	const [favorites, inklings] = useMemo((): [Page[], Page[]] => {
@@ -73,7 +72,13 @@ export function Sidebar() {
 						Favorites
 					</Text>
 					{favorites.map((page) => (
-						<Inkling key={page.id.toString()}>{page.title}</Inkling>
+						<Inkling
+							key={page.id.toString()}
+							favorite={true}
+							pageId={page.id}
+						>
+							{page.title}
+						</Inkling>
 					))}
 
 					<Group mt="xl">
@@ -107,9 +112,7 @@ export function Sidebar() {
 								textDecoration: "none",
 							}}
 						>
-							<Inkling active={page.id.id === active}>
-								{page.title || "New Inkling"}
-							</Inkling>
+							<Inkling pageId={page.id}>{page.title || "New Inkling"}</Inkling>
 						</Link>
 					))}
 				</Stack>

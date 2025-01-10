@@ -1,4 +1,5 @@
 import {
+	type Query,
 	type QueryClient,
 	useMutation,
 	useQuery,
@@ -73,7 +74,7 @@ export function useUpdatePage(id: string) {
 			);
 
 			if (page) {
-				updateCache(qc, page);
+				updatePageInCache(qc, page);
 				return page;
 			}
 
@@ -103,7 +104,7 @@ export function useCreatePage() {
 			);
 
 			if (page) {
-				updateCache(qc, page);
+				updatePageInCache(qc, page);
 				return page;
 			}
 
@@ -112,38 +113,63 @@ export function useCreatePage() {
 	});
 }
 
-function updateCache(qc: QueryClient, page: Page) {
-	qc.setQueriesData(
-		{
-			predicate: (query) => {
-				const key = query.queryKey;
-				if (key[0] === "page") {
-					switch (key[1]) {
-						case "fetch": {
-							if (key[2] === page.id.id) {
-								return true;
-							}
+export function useDeletePage() {
+	const db = useSurrealClient();
+	const qc = useQueryClient();
 
-							break;
-						}
-						case "list": {
-							const filter = key[2];
-							for (const item of Object.entries(
-								filter as PageFilter,
-							) as Entries<PageFilter>) {
-								if (!item) continue;
-								if (page[item[0]] !== item[1]) {
-									return false;
-								}
-							}
+	return useMutation<boolean, Error, RecordId<"page">>({
+		mutationKey: ["page", "delete"],
+		mutationFn: async (id) => {
+			const [[page]] = await db.query<[[Page | undefined]]>(
+				surql`DELETE ${id} RETURN BEFORE`,
+			);
 
-							return true;
+			if (page) {
+				removePageFromCache(qc, page);
+				return true;
+			}
+
+			return false;
+		},
+	});
+}
+
+function createCachePredicate(page: Page) {
+	return (query: Query) => {
+		const key = query.queryKey;
+		if (key[0] === "page") {
+			switch (key[1]) {
+				case "fetch": {
+					if (key[2] === page.id.id) {
+						return true;
+					}
+
+					break;
+				}
+				case "list": {
+					const filter = key[2];
+					for (const item of Object.entries(
+						filter as PageFilter,
+					) as Entries<PageFilter>) {
+						if (!item) continue;
+						if (page[item[0]] !== item[1]) {
+							return false;
 						}
 					}
-				}
 
-				return false;
-			},
+					return true;
+				}
+			}
+		}
+
+		return false;
+	};
+}
+
+function updatePageInCache(qc: QueryClient, page: Page) {
+	qc.setQueriesData(
+		{
+			predicate: createCachePredicate(page),
 		},
 		(prev) => {
 			if (Array.isArray(prev)) {
@@ -153,6 +179,23 @@ function updateCache(qc: QueryClient, page: Page) {
 			}
 
 			return page;
+		},
+	);
+}
+
+function removePageFromCache(qc: QueryClient, page: Page) {
+	qc.setQueriesData(
+		{
+			predicate: createCachePredicate(page),
+		},
+		(prev) => {
+			if (Array.isArray(prev)) {
+				const pages = prev as Page[];
+				const filtered = pages.filter((p) => p.id.id !== page.id.id);
+				return filtered;
+			}
+
+			return undefined;
 		},
 	);
 }

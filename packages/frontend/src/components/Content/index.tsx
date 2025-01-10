@@ -88,8 +88,9 @@ export function ContentEditor({ page }: { page: Page }) {
 							autosize
 							value={title}
 							onChange={(e) => setTitle(e.currentTarget.value)}
-							placeholder="New Inkling"
+							placeholder={page.title || "New Inkling"}
 							onKeyDown={handleTitleEnter}
+							autoFocus={title.length === 0}
 							styles={{
 								input: {
 									fontSize: rem(48),

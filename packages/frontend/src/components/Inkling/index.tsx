@@ -3,10 +3,10 @@ import classes from "./style.module.scss";
 import {
 	ActionIcon,
 	Button,
-	Menu,
-	Text,
 	type ButtonProps,
 	type ElementProps,
+	Menu,
+	Text,
 } from "@mantine/core";
 
 import {
@@ -18,22 +18,34 @@ import {
 	X,
 } from "lucide-react";
 
+import { useClipboard } from "@mantine/hooks";
 import type { PropsWithChildren } from "react";
+import type { RecordId } from "surrealdb";
+import { useLocation, useRoute } from "wouter";
+import { useDeletePage, useUpdatePage } from "~/queries/page";
 import { Icon } from "../Icon";
 
 export interface InklingProps
 	extends ButtonProps,
 		ElementProps<"button", "color"> {
-	active?: boolean;
 	favorite?: boolean;
+	pageId: RecordId<"page">;
 }
 
 export function Inkling({
-	active,
 	favorite,
 	children,
+	pageId,
 	...other
 }: PropsWithChildren<InklingProps>) {
+	const [_, navigate] = useLocation();
+	const { mutateAsync: deletePage } = useDeletePage();
+	const { mutateAsync: updatePage } = useUpdatePage(pageId.id as string);
+	const clipboard = useClipboard();
+
+	const path = `/inkling/${pageId.id}`;
+	const [active] = useRoute(path);
+
 	return (
 		<Button
 			fullWidth
@@ -41,6 +53,7 @@ export function Inkling({
 			color={active ? "gray.2" : "dark.0"}
 			className={classes.root}
 			c="black"
+			miw={0}
 			styles={{ label: { flex: 1 } }}
 			pr={4}
 			leftSection={
@@ -56,6 +69,7 @@ export function Inkling({
 						<ActionIcon
 							variant="subtle"
 							className={classes.action}
+							component="div"
 						>
 							<Icon
 								icon={EllipsisVertical}
@@ -72,6 +86,11 @@ export function Inkling({
 										size="sm"
 									/>
 								}
+								onClick={() =>
+									updatePage({
+										favorite: false,
+									})
+								}
 							>
 								Remove from favorites
 							</Menu.Item>
@@ -82,6 +101,11 @@ export function Inkling({
 										icon={Star}
 										size="sm"
 									/>
+								}
+								onClick={() =>
+									updatePage({
+										favorite: true,
+									})
 								}
 							>
 								Save to favorites
@@ -94,6 +118,10 @@ export function Inkling({
 									size="sm"
 								/>
 							}
+							onClick={() => {
+								const url = `${window.location.origin}${path}`;
+								clipboard.copy(url);
+							}}
 						>
 							Copy link to clipboard
 						</Menu.Item>
@@ -106,6 +134,13 @@ export function Inkling({
 									size="sm"
 								/>
 							}
+							onClick={() => {
+								deletePage(pageId).then(() => {
+									if (active) {
+										navigate("/");
+									}
+								});
+							}}
 						>
 							Remove inkling
 						</Menu.Item>
