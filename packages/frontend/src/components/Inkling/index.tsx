@@ -20,7 +20,13 @@ export function Inkling({
 			color={active ? "gray.2" : "dark.0"}
 			c="black"
 			styles={{ label: { flex: 1 } }}
-			leftSection={<Icon icon={FileTextIcon} size="sm" c="dark.9" />}
+			leftSection={
+				<Icon
+					icon={FileTextIcon}
+					size="sm"
+					c="dark.9"
+				/>
+			}
 			{...other}
 		>
 			{children}

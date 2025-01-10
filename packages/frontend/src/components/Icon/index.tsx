@@ -1,6 +1,6 @@
-import { Box, BoxProps } from "@mantine/core";
-import { LucideProps } from "lucide-react";
-import { FC } from "react"
+import { Box, type BoxProps } from "@mantine/core";
+import type { LucideProps } from "lucide-react";
+import type { FC } from "react";
 
 const ICON_SIZES: Record<string, number> = {
 	xs: 14,
@@ -20,5 +20,5 @@ export function Icon({ icon: Icon, size, ...other }: IconProps) {
 		<Box {...other}>
 			<Icon size={(size && ICON_SIZES[size]) || size} />
 		</Box>
-	)
+	);
 }

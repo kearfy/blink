@@ -1,10 +1,14 @@
 import { Box, Divider, Group } from "@mantine/core";
-import { Sidebar } from "../Sidebar";
 import { Content } from "../Content";
+import { Sidebar } from "../Sidebar";
 
 export function Layout() {
 	return (
-		<Group p="xl" h="100vh" align="stretch">
+		<Group
+			p="xl"
+			h="100vh"
+			align="stretch"
+		>
 			<Box w={250}>
 				<Sidebar />
 			</Box>
