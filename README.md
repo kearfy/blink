@@ -8,6 +8,8 @@
 
 Blink is a working browser-based note taking application built using SurrealDB for demonstration purposes. This project highlights the integration of SurrealDB in a larger projects, combining the power of IndexDB, TanStack Query, and SurrealDB.
 
+Explore Blink at https://blink-surrealdb.netlify.app/
+
 ## Technical breakdown
 
 - **React**: Frontend framework
@@ -21,11 +23,13 @@ Blink is a working browser-based note taking application built using SurrealDB f
 ## How to Run This Beauty
 
 ### Prerequisites
+
 Make sure you have the following installed:
 - [Bun](https://bunjs.org/)
 
 ### Installation
-Ready to dive in? Let’s go!
+
+Follow these steps to get the project up and running:
 
 1. Clone the repo:
    ```bash
