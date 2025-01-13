@@ -14,6 +14,8 @@ import { LoadingScreen } from "./components/Screens/Loading";
 const root = document.getElementById("root");
 if (!root) throw new Error("No root element");
 
+console.log(import.meta.env.BASE_URL);
+
 createRoot(root).render(
 	<StrictMode>
 		<Providers>

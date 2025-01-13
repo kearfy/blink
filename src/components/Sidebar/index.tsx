@@ -55,7 +55,7 @@ export function Sidebar() {
 							{favorites.data?.map((page) => (
 								<Link
 									key={page.id.id.toString()}
-									href={`/inkling/${page.id.id}`}
+									href={`${import.meta.env.BASE_URL}inkling/${page.id.id}`}
 									style={{
 										width: "100%",
 										display: "block",
@@ -87,7 +87,7 @@ export function Sidebar() {
 							color="dark.5"
 							onClick={() =>
 								createPage({}).then(
-									(page) => page && navigate(`/inkling/${page.id.id}`),
+									(page) => page && navigate(`${import.meta.env.BASE_URL}inkling/${page.id.id}`),
 								)
 							}
 						>
@@ -97,7 +97,7 @@ export function Sidebar() {
 					{inklings.data?.map((page) => (
 						<Link
 							key={page.id.id.toString()}
-							href={`/inkling/${page.id.id}`}
+							href={`${import.meta.env.BASE_URL}inkling/${page.id.id}`}
 							style={{
 								width: "100%",
 								display: "block",

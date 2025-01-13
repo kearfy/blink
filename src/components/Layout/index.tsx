@@ -19,7 +19,7 @@ export function Layout() {
 			/>
 			<Box flex={1}>
 				<Switch>
-					<Route path="/inkling/:id">
+					<Route path={`${import.meta.env.BASE_URL}inkling/:id`}>
 						{(params) => <Content id={params.id} />}
 					</Route>
 				</Switch>

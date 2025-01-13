@@ -7,7 +7,6 @@ import {
 	type ButtonProps,
 	Collapse,
 	type ElementProps,
-	Loader,
 	Menu,
 	Stack,
 	Text,
@@ -53,7 +52,7 @@ export function Inkling({ favorite, children, page, ...other }: InklingProps) {
 	const { mutateAsync: updatePage } = useUpdatePage(page.id.id as string);
 	const clipboard = useClipboard();
 
-	const path = `/inkling/${page.id}`;
+	const path = `${import.meta.env.BASE_URL}inkling/${page.id}`;
 	const [active] = useRoute(path);
 	const [expanded, setExpanded] = useState(false);
 
@@ -214,7 +213,7 @@ export function Inkling({ favorite, children, page, ...other }: InklingProps) {
 						{childPages?.map((child) => (
 							<Link
 								key={child.id.id.toString()}
-								href={`/inkling/${child.id.id}`}
+								href={`${import.meta.env.BASE_URL}inkling/${child.id.id}`}
 								style={{
 									width: "100%",
 									display: "block",
