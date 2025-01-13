@@ -52,7 +52,7 @@ export function Inkling({ favorite, children, page, ...other }: InklingProps) {
 	const { mutateAsync: updatePage } = useUpdatePage(page.id.id as string);
 	const clipboard = useClipboard();
 
-	const path = `${import.meta.env.BASE_URL}inkling/${page.id}`;
+	const path = `${import.meta.env.BASE_URL}inkling/${page.id.id}`;
 	const [active] = useRoute(path);
 	const [expanded, setExpanded] = useState(false);
 
