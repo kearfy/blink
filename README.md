@@ -56,5 +56,13 @@ Follow these steps to get the project up and running:
 This diagram explains the file structure of the project
 
 ```
-todo
+/src
+├── /assets - Contains all the assets used in the project
+├── /components - Contains all the components used in the project
+├── /queries - TanStack Query queries
+├── /schema - The SurrealDB schema migration files
+├── /styles - Global styles
+├── /typings - TypeScript typings
+├── /utils - Utility functions
+└── index.tsx - The entry point of the application
 ```
