@@ -20,7 +20,7 @@ export function Sidebar() {
 	const [_, navigate] = useLocation();
 	const { mutateAsync: createPage } = useCreatePage();
 	const favorites = usePages({ filter: { favorite: true } });
-	const inklings = usePages({ filter: { parent: undefined } });
+	const inklings = usePages({ filter: { parent: undefined, favorite: false } });
 
 	return (
 		<Box

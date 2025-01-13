@@ -77,13 +77,14 @@ export function useUpdatePage(id: string) {
 		mutationKey: ["page", "list", id],
 		mutationFn: async (payload) => {
 			const rid = new RecordId("page", id);
-			const [[page]] = await db.query<[(Page | undefined)[]]>(
-				surql`UPDATE ${rid} MERGE ${payload}`,
+			const [[res]] = await db.query<[({ res: [Page, Page] } | undefined)[]]>(
+				surql`UPDATE ${rid} MERGE ${payload} RETURN [$before, $after] AS res`,
 			);
 
-			if (page) {
-				updatePageInCache(qc, page);
-				return page;
+			if (res) {
+				const [before, after] = res.res;
+				updatePageInCache(qc, after, before);
+				return after;
 			}
 
 			return null;
@@ -189,21 +190,37 @@ function createCachePredicate(page: Page) {
 	};
 }
 
-function updatePageInCache(qc: QueryClient, page: Page) {
+function updatePageInCache(qc: QueryClient, after: Page, before?: Page) {
+	if (before) {
+		qc.setQueriesData(
+			{
+				predicate: createCachePredicate(before),
+			},
+			(prev) => {
+				if (Array.isArray(prev)) {
+					const pages = prev as Page[];
+					return pages.filter((p) => p.id.id !== before.id.id);
+				}
+
+				return after;
+			},
+		);
+	}
+
 	qc.setQueriesData(
 		{
-			predicate: createCachePredicate(page),
+			predicate: createCachePredicate(after),
 		},
 		(prev) => {
 			if (Array.isArray(prev)) {
 				const pages = prev as Page[];
-				const filtered = pages.filter((p) => p.id.id !== page.id.id);
-				return [...filtered, page].sort(
+				const filtered = pages.filter((p) => p.id.id !== after.id.id);
+				return [...filtered, after].sort(
 					(a, b) => b.updated.getTime() - a.updated.getTime(),
 				);
 			}
 
-			return page;
+			return after;
 		},
 	);
 }
