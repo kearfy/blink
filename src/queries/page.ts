@@ -26,7 +26,7 @@ export type PageFilter = Partial<Pick<Page, "favorite" | "parent">>;
 export function usePages({
 	filter,
 	enabled,
-}: { filter: PageFilter; enabled?: boolean }) {
+}: { filter?: PageFilter; enabled?: boolean } = {}) {
 	const db = useSurrealClient();
 
 	return useQuery<Page[]>({
@@ -35,7 +35,7 @@ export function usePages({
 		queryFn: async () => {
 			let query = "SELECT * FROM page";
 
-			const filterString = Object.entries(filter)
+			const filterString = Object.entries(filter ?? {})
 				.map(([key, value]) => `${key} = ${value}`)
 				.join(" AND ");
 
