@@ -87,7 +87,11 @@ export function Sidebar() {
 							color="dark.5"
 							onClick={() =>
 								createPage({}).then(
-									(page) => page && navigate(`${import.meta.env.BASE_URL}inkling/${page.id.id}`),
+									(page) =>
+										page &&
+										navigate(
+											`${import.meta.env.BASE_URL}inkling/${page.id.id}`,
+										),
 								)
 							}
 						>

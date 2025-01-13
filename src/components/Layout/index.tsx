@@ -1,8 +1,8 @@
 import { Box, Center, Divider, Group, Title } from "@mantine/core";
 import { Route, Switch } from "wouter";
+import { usePages } from "~/queries/page";
 import { Content } from "../Content";
 import { Sidebar } from "../Sidebar";
-import { usePages } from "~/queries/page";
 
 export function Layout() {
 	const { data: pages } = usePages({ filter: { parent: undefined } });
