@@ -1,7 +1,7 @@
 <br>
 
 <div align="center">
-	<img src="packages/frontend/src/assets/logo.svg">
+	<img src="src/assets/logo.svg">
 </div>
 
 # Blink - Instant editing
