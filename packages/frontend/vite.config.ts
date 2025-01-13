@@ -31,4 +31,5 @@ export default defineConfig({
 			"top-level-await": true,
 		},
 	},
+	base: "https://kearfy.github.io/blink/",
 });
